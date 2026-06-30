@@ -24,6 +24,7 @@ Train: 614 rows · Test: 367 rows.
 - ApplicantIncome 3812 vs 3833, LoanAmount 126 vs 129 → weak / none alone
 
 > Insight: raw income is weak, but an **income-to-loan ratio** may carry signal.
+
 > Imbalanced target → accuracy alone misleads; "approve everyone" already scores ~69%.
 
 ---
