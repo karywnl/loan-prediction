@@ -14,16 +14,31 @@ Train: 614 rows · Test: 367 rows.
 ## 🔍 EDA Findings
 
 **Categorical** (approval-rate gap vs target):
-- **Credit_History** — good 80% vs bad 8% → *dominant predictor*
-- **Property_Area** — Semiurban +11–15% over Urban/Rural → strong, cause unexplained by this data
-- Education (+10%), Married (+9%) → mild · Gender (+3%) → weak
-- Self_Employed → no signal (both groups at the ~69% base rate)
 
-**Numeric** (median, approved vs rejected):
-- **CoapplicantIncome** 1239 vs 268 → real signal (a second earner helps)
-- ApplicantIncome 3812 vs 3833, LoanAmount 126 vs 129 → weak / none alone
+| Feature | Effect on approval | Strength |
+|---|---|---|
+| Credit_History | good 80% vs bad 8% | 🟢 Dominant |
+| Property_Area | Semiurban +11–15% over Urban/Rural (cause unexplained by this data) | 🟢 Strong |
+| Education | Graduate +10% | 🟡 Mild |
+| Married | Married +9% | 🟡 Mild |
+| Gender | Male +3% | 🔴 Weak |
+| Self_Employed | both groups ≈ 69% base rate | ⚫ None |
+| Dependents | 0/1/2/3+ all ≈ base rate, non-monotonic | ⚫ None |
+| Loan_Amount_Term | 83% are 360; off-360 rates are tiny-sample noise | ⚫ None (low variance) |
 
-> Insight: raw income is weak, but an **income-to-loan ratio** may carry signal.
+**Numeric** (median, approved Y vs rejected N):
+
+| Feature | Approved (Y) | Rejected (N) | Strength |
+|---|---|---|---|
+| CoapplicantIncome | 1239 | 268 | 🟢 Real signal (second earner helps) |
+| ApplicantIncome | 3812 | 3833 | ⚫ None alone |
+| LoanAmount | 126 | 129 | 🔴 Weak |
+
+**Engineered features** (tested in `preprocessing.ipynb`):
+
+| Feature | Definition | Verdict |
+|---|---|---|
+| income_to_loan_ratio | (ApplicantIncome + CoapplicantIncome) / LoanAmount | ⚫ Dead — flat & non-monotonic across quartiles; Credit_History swamps affordability |
 
 > Imbalanced target → accuracy alone misleads; "approve everyone" already scores ~69%.
 
@@ -38,4 +53,5 @@ uv sync
 > Data isn't included — download `train.csv` / `test.csv` from the Analytics
 > Vidhya link above into `data/`.
 
-`profiling.ipynb` — inspection & data audit · `eda.ipynb` — exploratory analysis.
+`profiling.ipynb` — inspection & data audit · `eda.ipynb` — exploratory analysis ·
+`preprocessing.ipynb` — train/validation split, imputation & feature engineering.
